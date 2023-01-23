@@ -14,6 +14,7 @@ import { Dashboard } from './pages/Dashboard';
 import { CurrentMonth } from './pages/CurrentMonth';
 import { injectStore } from './common/factory/api_auth_client';
 import CreateBudget from './pages/CreateBudget/CreateBudget';
+import { CategoryList } from './pages/CategoryList';
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
           },
           { path: '/home/budget/create', element: <CreateBudget /> },
           { path: '/home/historic', element: <Dashboard /> },
-          { path: '/home/categories', element: <Dashboard /> },
+          { path: '/home/categories', element: <CategoryList /> },
         ],
       },
     ],
