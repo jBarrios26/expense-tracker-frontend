@@ -7,7 +7,7 @@ export interface TextFieldInterface {
   error?: string;
   type?: string;
   id: string;
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
 }
 
 const TextField: React.FC<TextFieldInterface> = ({
