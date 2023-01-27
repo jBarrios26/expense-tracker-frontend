@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { ApiError } from '../../../common/model/error/api_error';
 import { AppStore } from '../../../redux/store';
@@ -9,6 +9,10 @@ import { CreateBudgetResponse } from '../model/create_budget_response';
 
 export function useCreateBudget(onSucess?: () => void, onError?: () => void) {
   const selector = useSelector((app: AppStore) => app.user);
+  const budgetListPaginationSelecto = useSelector(
+    (app: AppStore) => app.budgetList
+  );
+  const queryClient = useQueryClient();
 
   async function createBudget(createBudget: CreateBudgetBody, userId: string) {
     const service = new CreateBudgetService();
@@ -32,8 +36,16 @@ export function useCreateBudget(onSucess?: () => void, onError?: () => void) {
       createBudget(createBudgetBody, selector.userId),
     {
       retry: 0,
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         if (onSucess !== undefined) onSucess();
+        await queryClient.cancelQueries({
+          queryKey: [
+            'userBudgetList',
+            selector.userId,
+            budgetListPaginationSelecto.pagination.currentPage,
+            10,
+          ],
+        });
       },
       onError: (data) => {
         if (onError !== undefined) onError();
