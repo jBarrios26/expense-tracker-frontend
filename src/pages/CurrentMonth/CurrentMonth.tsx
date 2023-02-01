@@ -108,6 +108,7 @@ function CurrentMonth() {
           <BudgetCard
             key={index}
             name={budget.name}
+            id={budget.budgetId}
             onDelete={function (id: string): void {
               console.log(budget.createdAt);
             }}
