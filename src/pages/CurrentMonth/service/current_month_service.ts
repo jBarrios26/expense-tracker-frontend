@@ -20,12 +20,10 @@ export default class CurrentMonthBudgetService {
     userId: string,
     page: number,
     size: number
-  ): Promise<CurrentMonthBudgetListResponse> {
-    const res = await this._clientInstance.client.get<
+  ): Promise<AxiosResponse<CurrentMonthBudgetListResponse, ApiError>> {
+    return await this._clientInstance.client.get<
       CurrentMonthBudgetListResponse,
       AxiosResponse<CurrentMonthBudgetListResponse, ApiError>
     >(`${userBudgetsPath}${userId}`, { params: { size: size, page: page } });
-
-    return res.data;
   }
 }

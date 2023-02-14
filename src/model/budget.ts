@@ -10,7 +10,7 @@ export interface Budget {
   totalSpending: number;
   budgetLimit: number;
   description: string;
-  creationDate: Date;
+  creationDate: string;
   categories: Array<BudgetCategories>;
 }
 

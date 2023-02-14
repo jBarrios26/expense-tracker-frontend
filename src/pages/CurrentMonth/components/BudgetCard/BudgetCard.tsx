@@ -46,11 +46,12 @@ function BudgetCard({
           <p className="text-lg font-semibold">Actions:</p>
           <div className="flex gap-2">
             <button
+              type="button"
               className={classNames(
                 'text-white-text',
                 'rounded-full p-2 hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl'
               )}
-              onClick={() => navigation(`/home/budget/item/${id}`)}
+              onClick={() => navigation(`/home/budget/${id}`)}
             >
               <HiOutlineEye size={32} />
             </button>

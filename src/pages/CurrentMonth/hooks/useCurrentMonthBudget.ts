@@ -15,24 +15,25 @@ export function useBudgetList(
 
   async function getUserBudgets(userId: string, page: number, size: number) {
     const service = new CurrentMonthBudgetService();
-    return await service.getUserBudgets(userId, page, size);
+    const response = await service.getUserBudgets(userId, page, size);
+    return response.data;
   }
 
   const { isLoading, error, isFetching, isError, data } = useQuery<
     CurrentMonthBudgetListResponse,
     AxiosError<ApiError>
-  >(
-    ['userBudgetList', selector.userId, page, size],
-    () => getUserBudgets(selector.userId, page, size),
-    {
-      retry: 0,
-      onSuccess(data) {
-        console.log(data);
-        onSuccess(data);
-      },
-      keepPreviousData: true,
-    }
-  );
+  >(['userBudgetList', selector.userId, page, size], {
+    queryFn: () => getUserBudgets(selector.userId, page, size),
+    retry: 0,
+    onSuccess(data) {
+      console.log(data);
+      onSuccess(data);
+    },
+    onError: (error) => {
+      console.log(error.code);
+    },
+    keepPreviousData: true,
+  });
 
   return {
     budgetsLoading: isLoading,

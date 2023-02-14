@@ -8,7 +8,7 @@ export const emtpyBudget: Budget = {
   totalSpending: 0,
   description: '',
   categories: [],
-  creationDate: new Date(),
+  creationDate: '',
 };
 
 const budgetSlice = createSlice({

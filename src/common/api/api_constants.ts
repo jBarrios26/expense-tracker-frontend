@@ -8,3 +8,5 @@ export const createBudgetPath = 'api/budget/create-budget';
 export const userBudgetsPath = 'api/budget/';
 export const userCategoriesPath = 'api/category/user-categories/';
 export const createCategoryPath = 'api/category/';
+export const budgetItemPath = 'api/budget/item/';
+export const budgetExpenseListPath = 'api/budget/item-expenses/';

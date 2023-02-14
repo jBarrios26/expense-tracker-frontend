@@ -34,6 +34,9 @@ export default class ApiAuthClient {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       } as headers & HeadersDefaults,
+      validateStatus: function (status) {
+        return status >= 200 && status < 300; // default
+      },
       withCredentials: false,
     });
     this.init();
@@ -87,6 +90,8 @@ export default class ApiAuthClient {
           } catch (_error) {
             return Promise.reject(_error);
           }
+        } else {
+          return Promise.reject(error);
         }
       }
     );
