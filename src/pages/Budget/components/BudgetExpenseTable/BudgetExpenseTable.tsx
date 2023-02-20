@@ -201,7 +201,7 @@ function BudgetExpenseTable({
   });
 
   return (
-    <div className={classNames('flex flex-col gap-2 py-4')}>
+    <div className={classNames('flex flex-col gap-2 pb-4')}>
       {table.getRowModel().rows.length === 0 ? (
         <div className="flex w-full flex-col items-center  justify-center p-14">
           <MdOutlineInbox size={64}></MdOutlineInbox>
@@ -221,12 +221,12 @@ function BudgetExpenseTable({
           </div>
         </div>
       ) : (
-        <table className="block w-full table-auto p-4 md:table md:rounded-xl md:bg-dark-blue-custom ">
+        <table className="block w-full md:table md:table-auto md:rounded-xl md:bg-dark-blue-custom md:p-4 ">
           <thead className="block md:table-header-group">
             {table.getHeaderGroups().map((headerGroup, index) => (
               <tr
                 key={headerGroup.id}
-                className="absolute left-[9999px] top-[9999px] block md:static md:table-row"
+                className="hidden  md:static md:table-row"
               >
                 {headerGroup.headers.map((header, index) =>
                   flexRender(
@@ -242,7 +242,7 @@ function BudgetExpenseTable({
               <tr
                 key={row.id}
                 className={
-                  'block rounded-xl bg-dark-blue-custom p-4 md:table-row md:bg-inherit'
+                  'my-3 block rounded-xl bg-dark-blue-custom p-4 md:my-0 md:table-row md:bg-inherit'
                 }
               >
                 {row.getVisibleCells().map((cell) => (

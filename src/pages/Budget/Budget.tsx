@@ -72,7 +72,7 @@ export function BudgetDetail() {
     dispatch(modifyBudgetExpenseList(data.pagination));
   });
   return (
-    <div className="p-6">
+    <div className="block p-6">
       <button
         type="button"
         className=" mb-2 flex items-center gap-1 text-lg text-white-text"
