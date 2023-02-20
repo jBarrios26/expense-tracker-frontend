@@ -1,17 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
 import BudgetInfo from './components/BudgetInfo/BudgetInfo';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { modifyBudget, resetBudget } from '../../redux/states/budget';
 import { useBudget } from './hooks/useBudget';
 import { BudgetCategories } from '../../model/budget';
 import LoaderOverlay from '../../Components/LoaderOverlay/LoaderOverlay';
 import { BudgetExpenseTable } from './components/BudgetExpenseTable';
+import { useBudgetExpenses } from './hooks/useBudgetExpenses';
+import { AppStore } from '../../redux/store';
+import { ExpenseRow } from './components/BudgetExpenseTable/BudgetExpenseTable';
+import { modifyBudgetExpenseList } from '../../redux/states/budget_expense_list';
+import { PaginationState } from '@tanstack/react-table';
 
 export function BudgetDetail() {
   const { budgetId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
+  const pagination = React.useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
   useEffect(() => {
     dispatch(modifyBudget({ id: budgetId }));
 
@@ -24,7 +43,7 @@ export function BudgetDetail() {
     (data) => {
       dispatch(
         modifyBudget({
-          id: data.id,
+          id: data.budgetId,
           name: data.name,
           creationDate: data.creationDate,
           categories: data.categories.map((category) => {
@@ -44,7 +63,14 @@ export function BudgetDetail() {
     }
   );
 
-  const navigate = useNavigate();
+  const {
+    expenseList,
+    expenseListError,
+    expenseListHasError,
+    expenseListIsLoading,
+  } = useBudgetExpenses(10, pageIndex, (data) => {
+    dispatch(modifyBudgetExpenseList(data.pagination));
+  });
   return (
     <div className="p-6">
       <button
@@ -68,17 +94,29 @@ export function BudgetDetail() {
           categories={budget?.categories ?? []}
         ></BudgetInfo>
       </LoaderOverlay>
-      <BudgetExpenseTable
-        expenses={[
-          {
-            expenseAmount: 100,
-            expenseName: 'Manga',
-            expenseDate: new Date(),
-            expenseCategory: { color: '#5a1afa', name: 'Manga' },
-            id: '1',
-          },
-        ]}
-      ></BudgetExpenseTable>
+      <LoaderOverlay isLoading={expenseListIsLoading}>
+        <BudgetExpenseTable
+          expenses={
+            expenseList?.expenseList.map((expense) => {
+              console.log(expense);
+
+              return {
+                expenseDate: new Date(expense.dateOfExpense),
+                expenseAmount: expense.amount,
+                expenseName: expense.name,
+                id: expense.id,
+                expenseCategory: {
+                  name: expense.category.name,
+                  color: expense.category.color,
+                },
+              } as ExpenseRow;
+            }) ?? ([] as ExpenseRow[])
+          }
+          pages={expenseList?.pagination.numOfPages}
+          pagination={pagination}
+          setPagination={setPagination}
+        />
+      </LoaderOverlay>
     </div>
   );
 }

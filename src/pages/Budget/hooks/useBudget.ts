@@ -15,7 +15,7 @@ export function useBudget(onSuccess: (data: BudgetItem) => void) {
   async function getBudget(budgetId: string | undefined) {
     if (budgetId === undefined || budgetId.length === 0) {
       return {
-        id: '',
+        budgetId: '',
         name: '',
         creationDate: new Date(),
         categories: [] as BudgetCategories[],

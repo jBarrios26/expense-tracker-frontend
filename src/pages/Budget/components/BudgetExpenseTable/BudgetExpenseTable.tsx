@@ -14,6 +14,7 @@ import { Chip } from '../../../../Components/Chip';
 import { Pagination } from '../../../../Components/Pagination';
 import RegularText from '../../../../Components/RegularText/RegularText';
 import { PrimaryButton } from '../../../../Components/PrimaryButton';
+import { Pagination as PaginationModel } from '../../../../common/model/pagination';
 
 export interface ExpenseRow {
   expenseDate: Date;
@@ -29,10 +30,18 @@ export interface ExpenseCategoryItem {
 }
 
 export interface BudgetExpenseTableProps {
+  pages?: number;
   expenses: ExpenseRow[];
+  pagination: PaginationState;
+  setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
 }
 
-function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
+function BudgetExpenseTable({
+  expenses,
+  pages,
+  pagination,
+  setPagination,
+}: BudgetExpenseTableProps) {
   const columns = useMemo<ColumnDef<ExpenseRow>[]>(
     () => [
       {
@@ -176,25 +185,12 @@ function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
     []
   );
 
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-
   const defaultData = React.useMemo(() => [], []);
-
-  const pagination = React.useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  );
 
   const table = useReactTable({
     data: expenses ?? defaultData,
     columns,
-    pageCount: 0,
+    pageCount: pages ?? 0,
     state: {
       pagination,
     },
@@ -264,10 +260,10 @@ function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
         </table>
       )}
       <Pagination
-        currentPage={pageIndex}
+        currentPage={pagination.pageIndex + 1}
         totalPages={table.getPageCount()}
         goTo={function (page: number): void {
-          table.setPageIndex(page);
+          table.setPageIndex(page - 1);
         }}
         next={function (): void {
           if (table.getCanNextPage()) table.nextPage();

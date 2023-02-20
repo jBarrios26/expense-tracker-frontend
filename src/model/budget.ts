@@ -21,3 +21,7 @@ export interface BudgetCategories {
   currentSpending: number;
   limit: number;
 }
+
+export interface BudgetExpenseList {
+  pagination: Pagination;
+}
