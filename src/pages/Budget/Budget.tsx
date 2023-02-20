@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack } from 'react-icons/md';
+import { MdAdd, MdArrowBack } from 'react-icons/md';
 import BudgetInfo from './components/BudgetInfo/BudgetInfo';
 import { useDispatch, useSelector } from 'react-redux';
 import { modifyBudget, resetBudget } from '../../redux/states/budget';
@@ -13,6 +13,8 @@ import { AppStore } from '../../redux/store';
 import { ExpenseRow } from './components/BudgetExpenseTable/BudgetExpenseTable';
 import { modifyBudgetExpenseList } from '../../redux/states/budget_expense_list';
 import { PaginationState } from '@tanstack/react-table';
+import { OutlineButton } from '../../Components/OutlineButton';
+import { FloatingButton } from '../../Components/FloatingButton';
 
 export function BudgetDetail() {
   const { budgetId } = useParams();
@@ -94,6 +96,26 @@ export function BudgetDetail() {
           categories={budget?.categories ?? []}
         ></BudgetInfo>
       </LoaderOverlay>
+      <div className="flex items-center justify-end py-4">
+        <span className="hidden grow-0 md:block">
+          <OutlineButton
+            name={'Create budget'}
+            type={'button'}
+            onClick={() => {
+              console.log('create');
+            }}
+          ></OutlineButton>
+        </span>
+        <span className="fixed bottom-3 right-3 grow-0 md:hidden">
+          <FloatingButton
+            onClick={() => {
+              console.log('create');
+            }}
+          >
+            <MdAdd size={32} />
+          </FloatingButton>
+        </span>
+      </div>
       <LoaderOverlay isLoading={expenseListIsLoading}>
         <BudgetExpenseTable
           expenses={
