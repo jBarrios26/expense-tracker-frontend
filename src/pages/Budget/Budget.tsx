@@ -15,6 +15,9 @@ import { modifyBudgetExpenseList } from '../../redux/states/budget_expense_list'
 import { PaginationState } from '@tanstack/react-table';
 import { OutlineButton } from '../../Components/OutlineButton';
 import { FloatingButton } from '../../Components/FloatingButton';
+import PrimaryButton from '../../Components/PrimaryButton/PrimaryButton';
+import { CreateExpenseModal } from './components/CreateExpenseModal';
+import { BudgetItemCategory } from './model/budget_item';
 
 export function BudgetDetail() {
   const { budgetId } = useParams();
@@ -25,6 +28,8 @@ export function BudgetDetail() {
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
   const pagination = React.useMemo(
     () => ({
@@ -98,18 +103,21 @@ export function BudgetDetail() {
       </LoaderOverlay>
       <div className="flex items-center justify-end py-4">
         <span className="hidden grow-0 md:block">
-          <OutlineButton
-            name={'Create budget'}
+          <PrimaryButton
             type={'button'}
             onClick={() => {
-              console.log('create');
+              setIsCreateModalOpen(true);
             }}
-          ></OutlineButton>
+          >
+            <span className="flex items-center justify-center gap-2">
+              <MdAdd size={16} /> Add New Expense
+            </span>
+          </PrimaryButton>
         </span>
         <span className="fixed bottom-3 right-3 grow-0 md:hidden">
           <FloatingButton
             onClick={() => {
-              console.log('create');
+              setIsCreateModalOpen(true);
             }}
           >
             <MdAdd size={32} />
@@ -139,6 +147,13 @@ export function BudgetDetail() {
           setPagination={setPagination}
         />
       </LoaderOverlay>
+      <CreateExpenseModal
+        budgetCategories={budget?.categories ?? ([] as BudgetItemCategory[])}
+        isOpen={isCreateModalOpen}
+        toggle={function (value: boolean): void {
+          setIsCreateModalOpen(value);
+        }}
+      />
     </div>
   );
 }

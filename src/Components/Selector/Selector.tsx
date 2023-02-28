@@ -9,7 +9,7 @@ export interface SelectorInterface {
   error?: string;
   type?: string;
   id: string;
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
   options: Array<SelectorOption>;
 }
 
