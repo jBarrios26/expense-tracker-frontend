@@ -1,5 +1,5 @@
 export interface BudgetItem {
-  id: string;
+  budgetId: string;
   name: string;
   description: string;
   budgetLimit: number;

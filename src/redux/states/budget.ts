@@ -1,5 +1,6 @@
-import { Budget } from '../../model/budget';
+import { Budget, BudgetExpenseList } from '../../model/budget';
 import { createSlice } from '@reduxjs/toolkit';
+import { Pagination } from '../../common/model/pagination';
 
 export const emtpyBudget: Budget = {
   name: '',
@@ -19,6 +20,7 @@ const budgetSlice = createSlice({
     modifyBudget: (state, action) => {
       return { ...state, ...action.payload } as Budget;
     },
+
     resetBudget: () => emtpyBudget,
   },
 });

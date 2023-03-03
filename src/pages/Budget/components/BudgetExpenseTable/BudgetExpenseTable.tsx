@@ -14,6 +14,7 @@ import { Chip } from '../../../../Components/Chip';
 import { Pagination } from '../../../../Components/Pagination';
 import RegularText from '../../../../Components/RegularText/RegularText';
 import { PrimaryButton } from '../../../../Components/PrimaryButton';
+import { Pagination as PaginationModel } from '../../../../common/model/pagination';
 
 export interface ExpenseRow {
   expenseDate: Date;
@@ -29,10 +30,18 @@ export interface ExpenseCategoryItem {
 }
 
 export interface BudgetExpenseTableProps {
+  pages?: number;
   expenses: ExpenseRow[];
+  pagination: PaginationState;
+  setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
 }
 
-function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
+function BudgetExpenseTable({
+  expenses,
+  pages,
+  pagination,
+  setPagination,
+}: BudgetExpenseTableProps) {
   const columns = useMemo<ColumnDef<ExpenseRow>[]>(
     () => [
       {
@@ -176,25 +185,12 @@ function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
     []
   );
 
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-
   const defaultData = React.useMemo(() => [], []);
-
-  const pagination = React.useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  );
 
   const table = useReactTable({
     data: expenses ?? defaultData,
     columns,
-    pageCount: 0,
+    pageCount: pages ?? 0,
     state: {
       pagination,
     },
@@ -205,7 +201,7 @@ function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
   });
 
   return (
-    <div className={classNames('flex flex-col gap-2 py-4')}>
+    <div className={classNames('flex flex-col gap-2 pb-4')}>
       {table.getRowModel().rows.length === 0 ? (
         <div className="flex w-full flex-col items-center  justify-center p-14">
           <MdOutlineInbox size={64}></MdOutlineInbox>
@@ -225,12 +221,12 @@ function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
           </div>
         </div>
       ) : (
-        <table className="block w-full table-auto p-4 md:table md:rounded-xl md:bg-dark-blue-custom ">
+        <table className="block w-full md:table md:table-auto md:rounded-xl md:bg-dark-blue-custom md:p-4 ">
           <thead className="block md:table-header-group">
             {table.getHeaderGroups().map((headerGroup, index) => (
               <tr
                 key={headerGroup.id}
-                className="absolute left-[9999px] top-[9999px] block md:static md:table-row"
+                className="hidden  md:static md:table-row"
               >
                 {headerGroup.headers.map((header, index) =>
                   flexRender(
@@ -246,7 +242,7 @@ function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
               <tr
                 key={row.id}
                 className={
-                  'block rounded-xl bg-dark-blue-custom p-4 md:table-row md:bg-inherit'
+                  'my-3 block rounded-xl bg-dark-blue-custom p-4 md:my-0 md:table-row md:bg-inherit'
                 }
               >
                 {row.getVisibleCells().map((cell) => (
@@ -264,10 +260,10 @@ function BudgetExpenseTable({ expenses }: BudgetExpenseTableProps) {
         </table>
       )}
       <Pagination
-        currentPage={pageIndex}
+        currentPage={pagination.pageIndex + 1}
         totalPages={table.getPageCount()}
         goTo={function (page: number): void {
-          table.setPageIndex(page);
+          table.setPageIndex(page - 1);
         }}
         next={function (): void {
           if (table.getCanNextPage()) table.nextPage();
