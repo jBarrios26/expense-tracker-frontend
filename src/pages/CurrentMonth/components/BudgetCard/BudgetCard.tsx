@@ -33,7 +33,7 @@ function BudgetCard({
         <h3> Created: {formatDate(createDate)}</h3>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex h-8 flex-wrap gap-2">
+        <div className="flex min-h-8 flex-wrap gap-2">
           {topCategories.map((category, index) => {
             return (
               <Chip key={index} color={category.color}>
