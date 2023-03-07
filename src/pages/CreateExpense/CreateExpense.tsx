@@ -3,20 +3,17 @@ import { PrimaryButton } from '../../Components/PrimaryButton';
 import { TextField } from '../../Components/TextField';
 import { Title } from '../../Components/Title';
 import { BudgetItemCategory } from '../Budget/model/budget_item';
-import Select, { MultiValue, SingleValue, StylesConfig } from 'react-select';
+import Select, { SingleValue, StylesConfig } from 'react-select';
 import './index.css';
 import * as yup from 'yup';
 import {
   Controller,
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
   SubmitErrorHandler,
   SubmitHandler,
   useForm,
-  UseFormStateReturn,
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { RequiredNumberSchema } from 'yup/lib/number';
 
 export interface CreateExpenseProps {
   budgetCategories: BudgetItemCategory[];
@@ -42,12 +39,27 @@ function CreateExpense({ budgetCategories }: CreateExpenseProps) {
       name: yup.string().required('Expense name is required'),
       amount: yup
         .number()
-        .typeError('Invalid amount')
+        .label('Amount')
         .required('Amount is required')
+        .typeError(({ label, type }) => `${label} must be of type ${type}`)
         .moreThan(0, 'Amount must be greater than 0')
-        .when('category', (category, schema) => {
-          return yup.number().min(1000);
-        }),
+        .when(
+          'category',
+          (category, scheme: RequiredNumberSchema<number | undefined>) => {
+            const categoryItem: BudgetItemCategory | undefined =
+              budgetCategories.find((option) => option.id === category);
+
+            if (categoryItem !== undefined) {
+              return yup
+                .number()
+                .max(
+                  categoryItem.limit - categoryItem.currentSpending,
+                  'You are exceeding the category limit'
+                );
+            }
+            return scheme;
+          }
+        ),
       date: yup.date().required('Date is required').typeError('Invalid date'),
       category: yup.string().required('You should pick a category'),
     });
@@ -137,7 +149,7 @@ function CreateExpense({ budgetCategories }: CreateExpenseProps) {
                 newValue: SingleValue<BudgetCategoryItemOption>,
                 _
               ) => {
-                onChange(newValue?.color);
+                onChange(newValue?.value);
               }}
             />
           )}
