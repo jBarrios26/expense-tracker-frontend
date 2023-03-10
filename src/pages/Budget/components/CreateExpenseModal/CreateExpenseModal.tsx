@@ -7,12 +7,14 @@ export interface CreateExpenseModalProps {
   isOpen: boolean;
   toggle: (value: boolean) => void;
   budgetCategories: BudgetItemCategory[];
+  page: number, 
+  size:number,
 }
 
 function CreateExpenseModal({
   isOpen,
   toggle,
-  budgetCategories,
+  budgetCategories, page, size,
 }: CreateExpenseModalProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderBackdrop = (props: any) => (
@@ -32,7 +34,10 @@ function CreateExpenseModal({
       className="fixed top-0 left-0 z-[1040]"
     >
       <div className="fixed top-1/2 left-1/2 flex w-full -translate-y-1/2 -translate-x-1/2 justify-center">
-        <CreateExpense budgetCategories={budgetCategories}></CreateExpense>
+        <CreateExpense budgetCategories={budgetCategories}
+         page={page} 
+         size={size} 
+         onComplete={() => toggle(!isOpen)}/>
       </div>
     </Modal>
   );

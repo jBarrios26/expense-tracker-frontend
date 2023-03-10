@@ -14,9 +14,14 @@ import {
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RequiredNumberSchema } from 'yup/lib/number';
+import { useAddExpense } from './hooks/useAddExpense';
+import { useParams } from 'react-router-dom';
 
 export interface CreateExpenseProps {
   budgetCategories: BudgetItemCategory[];
+  page: number,
+  size: number,
+  onComplete: () => void,
 }
 
 export interface BudgetCategoryItemOption {
@@ -32,7 +37,8 @@ export interface BudgetExpenseFormShape {
   date: Date;
 }
 
-function CreateExpense({ budgetCategories }: CreateExpenseProps) {
+function CreateExpense({ budgetCategories, page, size, onComplete }: CreateExpenseProps) {
+  const {budgetId} = useParams();
   const createExpenseSchema: yup.SchemaOf<BudgetExpenseFormShape> = yup
     .object()
     .shape({
@@ -124,10 +130,27 @@ function CreateExpense({ budgetCategories }: CreateExpenseProps) {
     mode: 'onBlur',
   });
 
-  const onSubmit: SubmitHandler<BudgetExpenseFormShape> = (data) =>
-    console.log(data);
+  const {addExpense, isError, error, isLoading} = useAddExpense(() => {
+    onComplete();  
+  }, page, size);
+
+  const onSubmit: SubmitHandler<BudgetExpenseFormShape> = (data) => addExpense({
+    name: data.name,
+    amount: data.amount,
+    date: data.date,
+    category: data.category,
+    budgetId: budgetId ?? '',
+  });
+
   const onError: SubmitErrorHandler<BudgetExpenseFormShape> = (data) =>
     console.error(data);
+
+  if (isLoading) 
+    return (
+      <div className="w-4/5 rounded-lg bg-dark-blue-custom px-3 py-4">
+        <Title>Adding expense...</Title>
+      </div>
+    );
 
   return (
     <div className="w-4/5 rounded-lg bg-dark-blue-custom px-3 py-4">

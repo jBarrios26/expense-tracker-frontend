@@ -153,6 +153,8 @@ export function BudgetDetail() {
         toggle={function (value: boolean): void {
           setIsCreateModalOpen(value);
         }}
+        page={pageIndex}
+        size={pageSize}
       />
     </div>
   );

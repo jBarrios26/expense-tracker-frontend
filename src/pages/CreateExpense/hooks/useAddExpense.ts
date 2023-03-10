@@ -18,7 +18,9 @@ export interface NewExpenseData {
 }
 
 export function useAddExpense(
-  onSuccess: (data: CreateExpenseResponse) => void
+  onSuccess: (data: CreateExpenseResponse) => void,
+  page: number,
+  size: number
 ) {
   const selector = useSelector((app: AppStore) => app.budget);
   const { budgetId } = useParams();
@@ -52,65 +54,24 @@ export function useAddExpense(
     {
       retry: 0,
       onSuccess: async (data) => {
-        console.log(data);
+        console.info(data);
+
         await queryClient.cancelQueries({
-          queryKey: ['userCategoriesList'],
-        });
-      },
-      onMutate: async (newCategory) => {
-        // Cancel any outgoing refetches
-        // (so they don't overwrite our optimistic update)
-        await queryClient.cancelQueries({
-          queryKey: ['userCategoriesList', selector.id],
+          queryKey: ['budgetItem', budgetId],
         });
 
-        // Snapshot the previous value
-        const previousCategories =
-          queryClient.getQueryData<CategoryListResponse>([
-            'userCategoriesList',
-            selector.id,
-          ]);
-
-        // Optimistically update to the new value
-        queryClient.setQueryData<CategoryListResponse>(
-          ['userCategoriesList', selector.id],
-          {
-            success: previousCategories?.success ?? false,
-            categories:
-              previousCategories === undefined
-                ? []
-                : previousCategories?.categories.concat([
-                    {
-                      id: 'aaaaa',
-                      name: newCategory.name,
-                      color: newCategory.name,
-                    },
-                  ]),
-          }
-        );
-
-        // Return a context with the previous and new todo
-        return { previousCategories, newCategory };
+        onSuccess(data);
       },
-      // If the mutation fails, use the context we returned above
-      onError: (err, newTodo, context) => {
-        queryClient.setQueryData(
-          ['userCategoriesList', selector.id],
-          (
-            context as {
-              previousCategories: CategoryListResponse;
-            }
-          ).previousCategories
-        );
-      },
-      // Always refetch after error or success:
       onSettled: async () => {
         await queryClient.invalidateQueries({
-          queryKey: ['userCategoriesList', selector.id],
+          queryKey: ['budgetItem', budgetId],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ['budgetItemExpenses', budgetId, size, page - 1],
         });
       },
     }
   );
 
-  return { createCategory: mutate, isLoading, error, isError };
+  return { addExpense: mutate, isLoading, error, isError };
 }
