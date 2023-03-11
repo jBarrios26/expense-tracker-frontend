@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Subtitle } from '../../Components/Subtitle';
 import { TextField } from '../../Components/TextField';
 import { Title } from '../../Components/Title';
@@ -32,10 +32,13 @@ const searchSchema = yup.object().shape({
 });
 
 function CurrentMonth() {
+  const dateMonth = new Date().toLocaleString('default', { month: 'long' });
+
   const dispatch = useDispatch();
   const budgetListState = useSelector((app: AppStore) => app.budgetList);
   useEffect(() => {
     dispatch(resetBudgetList());
+    return;
   }, [dispatch]);
 
   const {
@@ -71,10 +74,14 @@ function CurrentMonth() {
     navigation('/home/budget/create');
   }
 
+  if (budgetsHasError) {
+    return <div>{budgetsError?.response?.data.message}</div>;
+  }
+
   return (
     <div className={classNames('w-full flex-col py-6 px-5')}>
       <Title> Current month budgets</Title>
-      <Subtitle> January-2023</Subtitle>
+      <Subtitle> {dateMonth.toUpperCase()}-2023</Subtitle>
       <form
         className="mt-4 flex w-full items-center justify-start gap-3"
         onSubmit={(...args) => void handleSubmit(onSubmit, onError)(...args)}
@@ -108,6 +115,7 @@ function CurrentMonth() {
           <BudgetCard
             key={index}
             name={budget.name}
+            id={budget.budgetId}
             onDelete={function (id: string): void {
               console.log(budget.createdAt);
             }}

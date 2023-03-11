@@ -68,7 +68,7 @@ function NavBar({ children }: NavBarProps) {
                     'whitespace-nowrap text-lg transition-opacity duration-500 ',
                     isOpen
                       ? 'h-auto w-full opacity-100'
-                      : 'w-0 opacity-0  md:ml-6'
+                      : 'hidden w-0 opacity-0  md:ml-6'
                   )}
                 >
                   {' '}

@@ -1,11 +1,14 @@
 import React from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import { HiOutlineEye } from 'react-icons/hi';
 import { Chip } from '../../../../Components/Chip';
 import { classNames } from '../../../../util/classnames';
 import { formatDate } from '../../../../util/format_date';
 import { CurrentMonthCategories } from '../../model/current_month_budget_list_response';
+import { useNavigate } from 'react-router-dom';
 export interface BudgetCardInterface {
   name: string;
+  id: string;
   onDelete: (id: string) => void;
   topCategories: Array<CurrentMonthCategories>;
   createDate: Date;
@@ -13,10 +16,12 @@ export interface BudgetCardInterface {
 
 function BudgetCard({
   name,
+  id,
   topCategories,
   createDate,
   onDelete,
 }: BudgetCardInterface) {
+  const navigation = useNavigate();
   return (
     <div
       className={classNames(
@@ -28,7 +33,7 @@ function BudgetCard({
         <h3> Created: {formatDate(createDate)}</h3>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex h-8 flex-wrap gap-2">
+        <div className="flex min-h-8 flex-wrap gap-2">
           {topCategories.map((category, index) => {
             return (
               <Chip key={index} color={category.color}>
@@ -40,6 +45,16 @@ function BudgetCard({
         <div className="flex items-center justify-between border-t-2 border-white-text p-1">
           <p className="text-lg font-semibold">Actions:</p>
           <div className="flex gap-2">
+            <button
+              type="button"
+              className={classNames(
+                'text-white-text',
+                'rounded-full p-2 hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl'
+              )}
+              onClick={() => navigation(`/home/budget/${id}`)}
+            >
+              <HiOutlineEye size={32} />
+            </button>
             <button
               className={classNames(
                 'text-primary-blue',
