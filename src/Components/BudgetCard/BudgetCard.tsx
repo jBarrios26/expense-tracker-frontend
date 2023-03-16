@@ -1,10 +1,10 @@
 import React from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { HiOutlineEye } from 'react-icons/hi';
-import { Chip } from '../../../../Components/Chip';
-import { classNames } from '../../../../util/classnames';
-import { formatDate } from '../../../../util/format_date';
-import { CurrentMonthCategories } from '../../model/current_month_budget_list_response';
+import { Chip } from '../Chip';
+import { classNames } from '../../util/classnames';
+import { formatDate } from '../../util/format_date';
+import { CurrentMonthCategories } from '../../pages/CurrentMonth/model/current_month_budget_list_response';
 import { useNavigate } from 'react-router-dom';
 export interface BudgetCardInterface {
   name: string;
