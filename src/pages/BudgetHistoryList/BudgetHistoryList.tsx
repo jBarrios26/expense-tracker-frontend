@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { classNames } from '../../util/classnames';
 import { Title } from '../../Components/Title';
 import { Subtitle } from '../../Components/Subtitle';
@@ -13,7 +13,8 @@ import { Pagination } from '../../Components/Pagination';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import CreateMonthPickerDropdown from '../../Components/CreateMonthPickerModal/CreateMonthPickerModal';
+import MonthPickerDropdown from '../../Components/MonthPickerDropdown/MonthPickerDropdown';
+import { useMonthPicker } from '../../hooks/useMonthPicker';
 
 interface SearchForm {
   searchValue: string;
@@ -24,10 +25,27 @@ const searchSchema = yup.object().shape({
 });
 
 export default function BudgetHistoryList() {
-  const dateMonth = new Date().toLocaleString('default', {
-    month: 'long',
-    year: 'numeric',
-  });
+  const currentDate = useMemo(() => {
+    return new Date();
+  }, []);
+
+  const {
+    showMenu,
+    selectedMonth,
+    selectedYear,
+    onMonthChange,
+    onYearChange,
+    toggle,
+  } = useMonthPicker(currentDate.getMonth(), currentDate.getFullYear());
+
+  const dateMonth = useMemo(
+    () =>
+      new Date(selectedYear, selectedMonth - 1).toLocaleString('default', {
+        month: 'long',
+        year: 'numeric',
+      }),
+    [selectedMonth, selectedYear]
+  );
 
   const {
     register,
@@ -41,28 +59,28 @@ export default function BudgetHistoryList() {
   return (
     <div className={classNames('w-full flex-col py-6 px-5')}>
       <Title> Your budget history</Title>
-      <Subtitle>
-        {' '}
-        Currently watching budget from:{' '}
-        {dateMonth.substring(0, 1).toUpperCase() + dateMonth.substring(1)}
-      </Subtitle>
-      <CreateMonthPickerDropdown
-        onYearChange={function (year: number): void {
-          throw new Error('Function not implemented.');
-        }}
-        onMonthChange={function (month: number): void {
-          throw new Error('Function not implemented.');
-        }}
-        defaultMonth={1}
-        defaultYear={2010}
-        show={true}
-        onToggle={function (nextShow: boolean): void {
-          throw new Error('Function not implemented.');
-        }}
-      ></CreateMonthPickerDropdown>
+      <div className="flex flex-col justify-between md:flex-row">
+        <Subtitle>
+          {' '}
+          Currently watching budget from:{' '}
+          {dateMonth.substring(0, 1).toUpperCase() + dateMonth.substring(1)}
+        </Subtitle>
+        <div className="w-full md:w-1/5">
+          <MonthPickerDropdown
+            onYearChange={onYearChange}
+            onMonthChange={onMonthChange}
+            defaultMonth={selectedMonth}
+            defaultYear={selectedYear}
+            show={showMenu}
+            onToggle={toggle}
+          ></MonthPickerDropdown>
+        </div>
+      </div>
       <form
         className="mt-4 flex w-full items-center justify-start gap-3"
-        onSubmit={() => {}}
+        onSubmit={() => {
+          return;
+        }}
       >
         <span className=" grow">
           <TextField
