@@ -75,18 +75,22 @@ function MonthPicker({
         </button>
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {months.map((month, index) => (
-          <button
-            key={index}
-            className={classNames(
-              ' flex items-center justify-center rounded-sm bg-zinc-500 p-2 hover:bg-zinc-800',
-              index == defaultMonth - 1 ? 'bg-primary-blue/50' : ''
-            )}
-            onClick={() => onMonthChange(index + 1)}
-          >
-            {month}
-          </button>
-        ))}
+        {months.map((month, index) => {
+          console.log(month, index);
+
+          return (
+            <button
+              key={index}
+              className={classNames(
+                ' flex items-center justify-center rounded-sm bg-zinc-500 p-2 hover:bg-zinc-800',
+                index == defaultMonth ? 'bg-primary-blue/50' : ''
+              )}
+              onClick={() => onMonthChange(index)}
+            >
+              {month}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

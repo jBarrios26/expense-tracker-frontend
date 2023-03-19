@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { classNames } from '../../util/classnames';
 import { Title } from '../../Components/Title';
 import { Subtitle } from '../../Components/Subtitle';
@@ -15,6 +15,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import MonthPickerDropdown from '../../Components/MonthPickerDropdown/MonthPickerDropdown';
 import { useMonthPicker } from '../../hooks/useMonthPicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppStore } from '../../redux/store';
+import {
+  createHistoryBudgetList,
+  modifyHistoryBudgetList,
+  resetHistoryBudgetList,
+} from '../../redux/states/history_budget_list';
+import { useBudgetHistoryList } from './hooks/useBudgetHistoryList';
 
 interface SearchForm {
   searchValue: string;
@@ -25,6 +33,15 @@ const searchSchema = yup.object().shape({
 });
 
 export default function BudgetHistoryList() {
+  const dispatch = useDispatch();
+  const historyBudgetListState = useSelector(
+    (app: AppStore) => app.historyBudgetList
+  );
+  useEffect(() => {
+    dispatch(resetHistoryBudgetList());
+    return;
+  }, [dispatch]);
+
   const currentDate = useMemo(() => {
     return new Date();
   }, []);
@@ -40,7 +57,7 @@ export default function BudgetHistoryList() {
 
   const dateMonth = useMemo(
     () =>
-      new Date(selectedYear, selectedMonth - 1).toLocaleString('default', {
+      new Date(selectedYear, selectedMonth).toLocaleString('default', {
         month: 'long',
         year: 'numeric',
       }),
@@ -55,6 +72,22 @@ export default function BudgetHistoryList() {
     resolver: yupResolver(searchSchema),
     mode: 'onBlur',
   });
+
+  const {
+    budgetHistoryList,
+    budgetFetching,
+    budgetsLoading,
+    budgetsHasError,
+    budgetsError,
+  } = useBudgetHistoryList(
+    historyBudgetListState.pagination.currentPage,
+    20,
+    selectedYear,
+    selectedMonth,
+    (data) => {
+      dispatch(createHistoryBudgetList({ pagination: data.pagination }));
+    }
+  );
 
   return (
     <div className={classNames('w-full flex-col py-6 px-5')}>
@@ -86,7 +119,7 @@ export default function BudgetHistoryList() {
           <TextField
             id="search-bar"
             label="Search your budget"
-            //register={register('searchValue')}
+            register={register('searchValue')}
           ></TextField>
         </span>
         <span className="grow-0">
@@ -94,51 +127,56 @@ export default function BudgetHistoryList() {
         </span>
       </form>
       <div className={classNames('grid grid-cols-12 gap-3 py-3')}>
-        {/*budgetList === undefined ? <Loader></Loader> : <></>*/}
-        {/*budgetList?.budgets.map((budget, index) => (
-        <BudgetCard
-          key={index}
-          name={budget.name}
-          id={budget.budgetId}
-          onDelete={function (id: string): void {
-            console.log(budget.createdAt);
-          }}
-          topCategories={budget.topCategories.slice(
-            0,
-            Math.min(budget.topCategories.length, 3)
-          )}
-          createDate={new Date(budget.createdAt)}
-        ></BudgetCard>
-          ))*/}
+        {budgetsHasError ? (
+          <Title> Something went wrong . . . </Title>
+        ) : budgetsLoading ? (
+          <Loader></Loader>
+        ) : (
+          budgetHistoryList?.budgets.map((budget, index) => (
+            <BudgetCard
+              key={index}
+              name={budget.name}
+              id={budget.budgetId}
+              onDelete={function (id: string): void {
+                console.log(budget.createdAt);
+              }}
+              topCategories={budget.topCategories.slice(
+                0,
+                Math.min(budget.topCategories.length, 3)
+              )}
+              createDate={new Date(budget.createdAt)}
+            ></BudgetCard>
+          ))
+        )}
       </div>
       <Pagination
-        currentPage={1}
-        totalPages={1}
+        currentPage={historyBudgetListState.pagination.currentPage + 1}
+        totalPages={historyBudgetListState.pagination.numOfPages}
         goTo={function (page: number): void {
-          /*dispatch(
-          modifyBudgetList({
-            pagination: {
-              ...budgetListState.pagination,
-              currentPage: page - 1,
-            },
-          })
-        );*/
+          dispatch(
+            modifyHistoryBudgetList({
+              pagination: {
+                ...historyBudgetListState.pagination,
+                currentPage: page - 1,
+              },
+            })
+          );
         }}
         next={function (): void {
-          /*modifyBudgetList({
-          pagination: {
-            ...budgetListState.pagination,
-            currentPage: budgetListState.pagination.currentPage + 1,
-          },
-        });*/
+          modifyHistoryBudgetList({
+            pagination: {
+              ...historyBudgetListState.pagination,
+              currentPage: historyBudgetListState.pagination.currentPage + 1,
+            },
+          });
         }}
         previous={function (): void {
-          /*modifyBudgetList({
-          pagination: {
-            ...budgetListState.pagination,
-            currentPage: budgetListState.pagination.currentPage - 1,
-          },
-        });*/
+          modifyHistoryBudgetList({
+            pagination: {
+              ...historyBudgetListState.pagination,
+              currentPage: historyBudgetListState.pagination.currentPage - 1,
+            },
+          });
         }}
       />
     </div>

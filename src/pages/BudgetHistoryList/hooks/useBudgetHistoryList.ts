@@ -6,7 +6,7 @@ import { AppStore } from '../../../redux/store';
 import { HistoryBudgetListResponse } from '../model/budget_history_list_response';
 import BudgetHistoryService from '../service/budget_history_list_service';
 
-export function useBudgetList(
+export function useBudgetHistoryList(
   page: number,
   size: number,
   year: number,
@@ -27,7 +27,7 @@ export function useBudgetList(
       userId,
       page,
       size,
-      month,
+      month + 1,
       year
     );
     return response.data;
@@ -36,8 +36,8 @@ export function useBudgetList(
   const { isLoading, error, isFetching, isError, data } = useQuery<
     HistoryBudgetListResponse,
     AxiosError<ApiError>
-  >(['userBudgetList', selector.userId, page, size], {
-    queryFn: () => getUserBudgets(selector.userId, page, size, month, year),
+  >(['userHistoryBudgetList', selector.userId, page, size, month, year], {
+    queryFn: () => getUserBudgets(selector.userId, page, size, year, month),
     retry: 0,
     onSuccess(data) {
       console.log(data);

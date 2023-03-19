@@ -25,7 +25,7 @@ export default class BudgetHistoryService {
     return await this._clientInstance.client.get<
       HistoryBudgetListResponse,
       AxiosResponse<HistoryBudgetListResponse, ApiError>
-    >(`${getBudgetHistoryPath}`, {
+    >(`${getBudgetHistoryPath}${userId}`, {
       params: { page: page, size: size, month: month, year: year },
     });
   }

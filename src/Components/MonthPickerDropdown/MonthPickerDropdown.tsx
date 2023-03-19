@@ -21,7 +21,7 @@ export default function MonthPickerDropdown({
   onToggle,
 }: MonthPickerDropdownProps) {
   const selectedRange = useMemo(() => {
-    const date = Date.parse(`${defaultYear}-${defaultMonth}-01`);
+    const date = Date.parse(`${defaultYear}-${defaultMonth + 1}-01`);
     return new Date(date).toLocaleString('default', {
       month: 'long',
       year: 'numeric',
