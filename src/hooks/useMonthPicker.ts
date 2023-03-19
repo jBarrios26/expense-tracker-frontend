@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export function useMonthPicker(initialMonth: number, initialYear: number) {
   const [showMenu, setShowMenu] = useState(false);

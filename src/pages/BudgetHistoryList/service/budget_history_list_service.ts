@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios';
 import {
   apiUrl,
-  createExpensePath,
   getBudgetHistoryPath,
 } from '../../../common/api/api_constants';
 import ApiAuthClient from '../../../common/factory/api_auth_client';
