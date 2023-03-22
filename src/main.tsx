@@ -16,6 +16,7 @@ import { injectStore } from './common/factory/api_auth_client';
 import CreateBudget from './pages/CreateBudget/CreateBudget';
 import { CategoryList } from './pages/CategoryList';
 import BudgetDetail from './pages/Budget/Budget';
+import BudgetHistoryList from './pages/BudgetHistoryList/BudgetHistoryList';
 
 const router = createBrowserRouter([
   {
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
           },
           { path: '/home/budget/:budgetId', element: <BudgetDetail /> },
           { path: '/home/budget/create', element: <CreateBudget /> },
-          { path: '/home/historic', element: <Dashboard /> },
+          { path: '/home/historic', element: <BudgetHistoryList /> },
           { path: '/home/categories', element: <CategoryList /> },
         ],
       },

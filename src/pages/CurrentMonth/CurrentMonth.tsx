@@ -12,7 +12,7 @@ import FloatingButton from '../../Components/FloatingButton/FloatingButton';
 import { MdAdd } from 'react-icons/md';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Pagination } from '../../Components/Pagination';
-import { BudgetCard } from './components/BudgetCard';
+import { BudgetCard } from '../../Components/BudgetCard';
 import { useBudgetList } from './hooks/useCurrentMonthBudget';
 import { useDispatch, useSelector } from 'react-redux';
 import {
