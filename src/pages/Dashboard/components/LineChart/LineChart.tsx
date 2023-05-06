@@ -29,11 +29,12 @@ function LineChart({ data }: LineChartProps) {
   );
 
   return (
-    <div className="min-h-[300px]">
+    <div className="min-h-[400px]">
       <Chart
-        className="h-[300px]"
+        className="h-[400px]"
         options={{
           data,
+          defaultColors: ['#0368FF'],
           primaryAxis,
           secondaryAxes,
           tooltip: false,

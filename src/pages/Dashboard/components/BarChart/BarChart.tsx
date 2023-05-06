@@ -23,22 +23,49 @@ function BarChart({ data }: BarChartProps) {
     () => [
       {
         getValue: (datum) => datum.secondary,
+        min: 0,
       },
     ],
     []
   );
 
   return (
-    <Chart
-      className=" p-2 "
-      options={{
-        data,
-        primaryAxis,
-        secondaryAxes,
-        tooltip: false,
-        dark: true,
-      }}
-    />
+    <div className=" min-h-[400px]">
+      <Chart
+        className="h-[400px]"
+        options={{
+          defaultColors: ['#0368FF  '],
+          data,
+          primaryAxis,
+          secondaryAxes,
+          tooltip: false,
+          dark: true,
+          getDatumStyle: (datum, status) => {
+            return {
+              rectangle: {
+                backgroundColor: '#ff0000',
+                stroke: 'black',
+                strokeWidth: 3,
+              },
+              area: {
+                backgroundColor: '#ff0000',
+              },
+              line: {
+                backgroundColor: '#ff0000',
+                stroke: 'black',
+                strokeWidth: 3,
+              },
+              circle: {
+                backgroundColor: '#ff0000',
+                stroke: 'black',
+                strokeWidth: 3,
+              },
+              backgroundColor: 'rgb(255,255,0)',
+            };
+          },
+        }}
+      />
+    </div>
   );
 }
 
