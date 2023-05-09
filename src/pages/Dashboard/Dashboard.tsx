@@ -1,13 +1,13 @@
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { classNames } from '../../util/classnames';
 import { LineChart } from './components/LineChart';
 import { Subtitle } from '../../Components/Subtitle';
 import { BarChart } from './components/BarChart';
 import HorizontalBarChart from './components/HorizontalBarChart/HorizontalBarChart';
 import { PieChart } from './components/PieChart';
-import { TransactionCard } from './components/TransactionCard';
-import { formatDate } from '../../util/format_date';
-import { formatDateTime } from '../../util/format_date_time';
+import { LastTransactions } from './components/LastTransactions';
+import Card from './components/Card';
+import { SpentByWeekDay } from './components/SpentByWeekDay';
 
 function Dashboard() {
   const { data } = {
@@ -114,53 +114,11 @@ function Dashboard() {
             colors={'#0368FF80'}
           ></HorizontalBarChart>{' '}
         </Card>
-        <Card className="lg:h-1/2">
-          <Subtitle> Amount spent each day</Subtitle>
-          <PieChart
-            labels={['a', 'b', 'c']}
-            name={''}
-            data={[1, 4, 6]}
-            labelTag={'Amount Spent: '}
-            colors={['#ff00ff', '#ff0000', '#ffff00']}
-          ></PieChart>
-        </Card>
+        <SpentByWeekDay />
       </div>
       <div className=" col-span-1 md:col-span-6 lg:col-span-2">
-        <Subtitle> Last Transactions</Subtitle>
-        <div className="flex flex-col flex-wrap gap-2">
-          <TransactionCard
-            color={'#FF00FF'}
-            date={formatDateTime(new Date())}
-            name={'Prueba'}
-            amount={0}
-          ></TransactionCard>
-          <TransactionCard
-            color={'#FF00FF'}
-            date={formatDateTime(new Date())}
-            name={'Prueba'}
-            amount={0}
-          ></TransactionCard>
-          <TransactionCard
-            color={'#FF00FF'}
-            date={formatDateTime(new Date())}
-            name={'Prueba'}
-            amount={0}
-          ></TransactionCard>
-        </div>
+        <LastTransactions />
       </div>
-    </div>
-  );
-}
-
-function Card(props: { children: ReactNode; className?: string }) {
-  return (
-    <div
-      className={classNames(
-        'w-full rounded-lg bg-dark-blue-custom py-5 px-4',
-        `${props.className ?? ''}`
-      )}
-    >
-      {props.children}
     </div>
   );
 }

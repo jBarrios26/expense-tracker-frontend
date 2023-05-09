@@ -1,8 +1,17 @@
 import React, { ReactNode } from 'react';
-interface CardProps {
-  children: ReactNode;
+import { classNames } from '../../../../util/classnames';
+
+function Card(props: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      className={classNames(
+        'w-full rounded-lg bg-dark-blue-custom py-5 px-4',
+        `${props.className ?? ''}`
+      )}
+    >
+      {props.children}
+    </div>
+  );
 }
 
-export default function Card({ children }: CardProps) {
-  return <div className=" bg-dark-blue-custom py-2 px-4">{children}</div>;
-}
+export default Card;

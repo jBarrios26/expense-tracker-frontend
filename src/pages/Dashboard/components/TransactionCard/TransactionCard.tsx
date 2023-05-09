@@ -21,7 +21,7 @@ function TransactionCard({ color, name, date, amount }: TransactionCardProps) {
         <RegularText text={name} upperPadding={false} />
         <span className="text-sm text-gray-400"> {date}</span>
       </div>
-      <div> $ {amount}</div>
+      <div> $ {amount.toFixed(2)}</div>
     </div>
   );
 }

@@ -9,16 +9,19 @@ export type PieChartProps = {
   name: string;
   data: number[];
   labelTag: string;
-  colors: string[];
 };
 
-function PieChart({
-  name,
-  labels,
-  labelTag,
-  data: dataValues,
-  colors,
-}: PieChartProps) {
+const pieChartColors = [
+  '#9b5fe0',
+  '#16a4d8',
+  '#60dbe8',
+  '#8bd346',
+  '#efdf48',
+  '#f9a52c',
+  '#d64e12',
+];
+
+function PieChart({ name, labels, labelTag, data: dataValues }: PieChartProps) {
   const data = useMemo(() => {
     return {
       labels: labels,
@@ -26,13 +29,13 @@ function PieChart({
         {
           label: labelTag,
           data: dataValues,
-          backgroundColor: colors.map((color) => color.concat('33')),
-          borderColor: colors,
+          backgroundColor: pieChartColors.map((color) => color.concat('33')),
+          borderColor: pieChartColors,
           borderWidth: 1,
         },
       ],
     };
-  }, [colors, dataValues, labelTag, labels]);
+  }, [dataValues, labelTag, labels]);
 
   return (
     <div className="flex min-w-full items-center justify-center">
