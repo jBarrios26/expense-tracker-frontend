@@ -4,6 +4,10 @@ import { LineChart } from './components/LineChart';
 import { Subtitle } from '../../Components/Subtitle';
 import { BarChart } from './components/BarChart';
 import HorizontalBarChart from './components/HorizontalBarChart/HorizontalBarChart';
+import { PieChart } from './components/PieChart';
+import { TransactionCard } from './components/TransactionCard';
+import { formatDate } from '../../util/format_date';
+import { formatDateTime } from '../../util/format_date_time';
 
 function Dashboard() {
   const { data } = {
@@ -89,27 +93,61 @@ function Dashboard() {
   };
 
   return (
-    <div className="row-auto grid gap-2 p-2 first:mt-0 md:grid-cols-6 md:p-8 ">
+    <div className="row-auto grid w-full gap-2 p-2 first:mt-0 md:grid-cols-6 md:p-8 ">
       <div className="col-span-1 flex h-full flex-col gap-2 md:col-span-6 lg:col-span-4">
-        <Card>
+        <Card className="lg:h-1/2">
           <Subtitle> Amount spent this month</Subtitle>
-          <div className="">
-            <LineChart data={data}></LineChart>
-          </div>
+          <LineChart data={data}></LineChart>
         </Card>
-        <Card className="">
+        <Card className="lg:h-1/2">
+          <Subtitle> Amount spent this year</Subtitle>
           <BarChart data={barData.data}></BarChart>
         </Card>
       </div>
       <div className="col-span-1 flex h-full w-full flex-col gap-2 md:col-span-6 lg:col-span-2">
         <Card className="lg:h-1/2">
-          <HorizontalBarChart></HorizontalBarChart>{' '}
+          <Subtitle> Top categories </Subtitle>
+          <HorizontalBarChart
+            labels={['Manga', 'Abril']}
+            data={[1, 4]}
+            name="Top categories"
+            colors={'#0368FF80'}
+          ></HorizontalBarChart>{' '}
         </Card>
-        <Card className="lg:h-1/2">Hola mundo 4</Card>
+        <Card className="lg:h-1/2">
+          <Subtitle> Amount spent each day</Subtitle>
+          <PieChart
+            labels={['a', 'b', 'c']}
+            name={''}
+            data={[1, 4, 6]}
+            labelTag={'Amount Spent: '}
+            colors={['#ff00ff', '#ff0000', '#ffff00']}
+          ></PieChart>
+        </Card>
       </div>
-      <Card className=" col-span-1 md:col-span-6 lg:col-span-2">
-        Hola mundo 5
-      </Card>
+      <div className=" col-span-1 md:col-span-6 lg:col-span-2">
+        <Subtitle> Last Transactions</Subtitle>
+        <div className="flex flex-col flex-wrap gap-2">
+          <TransactionCard
+            color={'#FF00FF'}
+            date={formatDateTime(new Date())}
+            name={'Prueba'}
+            amount={0}
+          ></TransactionCard>
+          <TransactionCard
+            color={'#FF00FF'}
+            date={formatDateTime(new Date())}
+            name={'Prueba'}
+            amount={0}
+          ></TransactionCard>
+          <TransactionCard
+            color={'#FF00FF'}
+            date={formatDateTime(new Date())}
+            name={'Prueba'}
+            amount={0}
+          ></TransactionCard>
+        </div>
+      </div>
     </div>
   );
 }

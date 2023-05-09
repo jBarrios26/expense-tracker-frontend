@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,6 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -18,52 +19,67 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  indexAxis: 'y' as const,
-  elements: {
-    bar: {
-      borderWidth: 2,
-    },
-  },
-  plugins: {
-    legend: {
-      display: false,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Horizontal Bar Chart',
-    },
-  },
-  maintainAspectRatio: false,
-};
+export interface HorizontalBarChartProps {
+  labels: string[];
+  data: number[];
+  colors: string[] | '#0368FF80';
+  name: string;
+}
 
-interface HorizontalBarChartProps {}
+export default function HorizontalBarChart({
+  colors,
+  data: dataValues,
+  name,
+  labels,
+}: HorizontalBarChartProps) {
+  const options = useMemo(() => {
+    return {
+      indexAxis: 'y' as const,
+      elements: {
+        bar: {
+          borderWidth: 2,
+        },
+      },
+      scales: {
+        y: {
+          border: { color: 'white' },
+        },
+        x: {
+          grid: {
+            color: '#FFFFFF2F',
+            borderColor: 'grey',
+            tickColor: 'grey',
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: true,
+          text: name,
+        },
+      },
 
-export default function HorizontalBarChart({}: HorizontalBarChartProps) {
-  const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-  ];
+      maintainAspectRatio: false,
+    };
+  }, [name]);
 
   const data = {
     labels,
     datasets: [
       {
         axis: 'y',
-        label: 'Dataset 1',
-        data: labels.map((l) => l.length),
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        label: name,
+        data: dataValues,
+        borderColor: colors,
+        backgroundColor: colors,
       },
     ],
   };
   return (
-    <div className="h-full">
+    <div className="h-[90%]">
       <Bar options={options} data={data} />
     </div>
   );
