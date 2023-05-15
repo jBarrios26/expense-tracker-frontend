@@ -12,3 +12,9 @@ export const budgetItemPath = 'api/budget/item/';
 export const budgetExpenseListPath = 'api/budget/item-expenses/';
 export const createExpensePath = 'api/budget/create-expense';
 export const getBudgetHistoryPath = 'api/budget/budget-history/';
+
+export const lastTransationPath = 'api/dashboard/last-transactions/';
+export const totalSpentYearPath = 'api/dashboard/total-spent/';
+export const totalSpentMonthPath = 'api/dashboard/total-spent-by-month/';
+export const topCategoriesPath = 'api/dashboard/categories/';
+export const spentByDayPath = 'api/dashboard/categories/spent-by-day/';

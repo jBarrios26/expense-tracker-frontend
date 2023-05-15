@@ -128,8 +128,6 @@ export function BudgetDetail() {
         <BudgetExpenseTable
           expenses={
             expenseList?.expenseList.map((expense) => {
-              console.log(expense);
-
               return {
                 expenseDate: new Date(expense.dateOfExpense),
                 expenseAmount: expense.amount,
