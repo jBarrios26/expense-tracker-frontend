@@ -63,28 +63,22 @@ export default function BudgetHistoryList() {
 
   const {
     register,
-    handleSubmit,
     formState: { errors },
   } = useForm<SearchForm>({
     resolver: yupResolver(searchSchema),
     mode: 'onBlur',
   });
 
-  const {
-    budgetHistoryList,
-    budgetFetching,
-    budgetsLoading,
-    budgetsHasError,
-    budgetsError,
-  } = useBudgetHistoryList(
-    historyBudgetListState.pagination.currentPage,
-    20,
-    selectedYear,
-    selectedMonth,
-    (data) => {
-      dispatch(createHistoryBudgetList({ pagination: data.pagination }));
-    }
-  );
+  const { budgetHistoryList, budgetsLoading, budgetsHasError } =
+    useBudgetHistoryList(
+      historyBudgetListState.pagination.currentPage,
+      20,
+      selectedYear,
+      selectedMonth,
+      (data) => {
+        dispatch(createHistoryBudgetList({ pagination: data.pagination }));
+      }
+    );
 
   return (
     <div className={classNames('w-full flex-col py-6 px-5')}>

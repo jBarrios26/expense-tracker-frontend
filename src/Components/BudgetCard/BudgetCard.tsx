@@ -12,6 +12,7 @@ export interface BudgetCardInterface {
   onDelete: (id: string) => void;
   topCategories: Array<CurrentMonthCategories>;
   createDate: Date;
+  isHistoryDetail?: boolean;
 }
 
 function BudgetCard({
@@ -20,6 +21,7 @@ function BudgetCard({
   topCategories,
   createDate,
   onDelete,
+  isHistoryDetail = false,
 }: BudgetCardInterface) {
   const navigation = useNavigate();
   return (
@@ -33,7 +35,7 @@ function BudgetCard({
         <h3> Created: {formatDate(createDate)}</h3>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex min-h-8 flex-wrap gap-2">
+        <div className="min-h-8 flex flex-wrap gap-2">
           {topCategories.map((category, index) => {
             return (
               <Chip key={index} color={category.color}>
@@ -51,7 +53,11 @@ function BudgetCard({
                 'text-white-text',
                 'rounded-full p-2 hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl'
               )}
-              onClick={() => navigation(`/home/budget/${id}`)}
+              onClick={() =>
+                isHistoryDetail
+                  ? navigation(`/home/budget-history/${id}`)
+                  : navigation(`/home/budget/${id}`)
+              }
             >
               <HiOutlineEye size={32} />
             </button>

@@ -34,6 +34,7 @@ export interface BudgetExpenseTableProps {
   expenses: ExpenseRow[];
   pagination: PaginationState;
   setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
+  disableActions?: boolean;
 }
 
 function BudgetExpenseTable({
@@ -41,6 +42,7 @@ function BudgetExpenseTable({
   pages,
   pagination,
   setPagination,
+  disableActions = false,
 }: BudgetExpenseTableProps) {
   const columns = useMemo<ColumnDef<ExpenseRow>[]>(
     () => [
@@ -166,18 +168,22 @@ function BudgetExpenseTable({
         ),
         cell: (value) => (
           <div className="flex items-center justify-center p-3">
-            <button
-              onClick={() => {
-                console.log('edit');
-              }}
-              className={classNames(
-                'text-primary-blue',
-                'rounded-full  hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl',
-                'block  text-sm font-semibold md:flex md:items-center md:justify-center md:p-3 md:text-xl'
-              )}
-            >
-              <MdEdit size={32} />
-            </button>
+            {disableActions ? (
+              <h3>No options available</h3>
+            ) : (
+              <button
+                onClick={() => {
+                  console.log('edit');
+                }}
+                className={classNames(
+                  'text-primary-blue',
+                  'rounded-full  hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl',
+                  'block  text-sm font-semibold md:flex md:items-center md:justify-center md:p-3 md:text-xl'
+                )}
+              >
+                <MdEdit size={32} />
+              </button>
+            )}
           </div>
         ),
       },
