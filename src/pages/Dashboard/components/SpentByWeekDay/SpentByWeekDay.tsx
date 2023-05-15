@@ -9,29 +9,29 @@ import { weekDay } from '../../../../common/model/weekday';
 function SpentByWeekDay() {
   const { spentByDay, isLoading } = useSpentByDay();
   return (
-    <div className="lg:h-1/2">
-      <Subtitle> Amount spent each day</Subtitle>
-      <Card>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <PieChart
-            labels={
-              spentByDay?.expenseInWeekList.map(
-                (expense) => weekDay[expense.weekDay]
-              ) ?? []
-            }
-            name={'Weekday'}
-            data={
-              spentByDay?.expenseInWeekList.map(
-                (expense) => expense.spentTotal
-              ) ?? []
-            }
-            labelTag={'Amount Spent: $'}
-          ></PieChart>
-        )}
-      </Card>
-    </div>
+    <Card className="lg:h-1/2">
+      <div className="pb-2">
+        <Subtitle> Amount spent each day</Subtitle>{' '}
+      </div>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <PieChart
+          labels={
+            spentByDay?.expenseInWeekList.map(
+              (expense) => weekDay[expense.weekDay]
+            ) ?? []
+          }
+          name={'Weekday'}
+          data={
+            spentByDay?.expenseInWeekList.map(
+              (expense) => expense.spentTotal
+            ) ?? []
+          }
+          labelTag={'Amount Spent: $'}
+        ></PieChart>
+      )}
+    </Card>
   );
 }
 

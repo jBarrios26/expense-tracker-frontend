@@ -40,7 +40,7 @@ function BarChart({ data }: BarChartProps) {
           secondaryAxes,
           tooltip: false,
           dark: true,
-          getDatumStyle: (datum, status) => {
+          getDatumStyle: () => {
             return {
               rectangle: {
                 backgroundColor: '#ff0000',

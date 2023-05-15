@@ -4,6 +4,7 @@ import {
   lastTransationPath,
   spentByDayPath,
   topCategoriesPath,
+  totalSpentMonthPath,
   totalSpentYearPath,
 } from '../../../common/api/api_constants';
 import ApiAuthClient from '../../../common/factory/api_auth_client';
@@ -51,7 +52,7 @@ export default class DashboardService {
     const res = await this._clientInstance.client.get<
       ExpenseChartList,
       AxiosResponse<ExpenseChartList, ApiError>
-    >(`${totalSpentYearPath}${userId}?year=${year}&month=${month}`);
+    >(`${totalSpentMonthPath}${userId}?year=${year}&month=${month + 1}`);
 
     return res.data;
   }

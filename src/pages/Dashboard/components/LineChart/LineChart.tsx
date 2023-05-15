@@ -4,7 +4,7 @@ import { AxisOptions, Chart } from 'react-charts';
 
 export interface LineChartProps {
   data: {
-    data: { primary: Date; secondary: number }[];
+    data: { primary: Date | string; secondary: number }[];
     label: string;
   }[];
 }
@@ -23,6 +23,7 @@ function LineChart({ data }: LineChartProps) {
     () => [
       {
         getValue: (datum) => datum.secondary,
+        min: 0,
       },
     ],
     []

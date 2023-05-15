@@ -29,7 +29,7 @@ function PieChart({ name, labels, labelTag, data: dataValues }: PieChartProps) {
         {
           label: labelTag,
           data: dataValues,
-          backgroundColor: pieChartColors.map((color) => color.concat('33')),
+          backgroundColor: pieChartColors.map((color) => color.concat('BB')),
           borderColor: pieChartColors,
           borderWidth: 1,
         },
@@ -38,7 +38,7 @@ function PieChart({ name, labels, labelTag, data: dataValues }: PieChartProps) {
   }, [dataValues, labelTag, labels]);
 
   return (
-    <div className="flex min-w-full items-center justify-center">
+    <div className="flex min-w-full items-center justify-center py-8 px-4">
       <Pie data={data} />
     </div>
   );

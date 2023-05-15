@@ -18,7 +18,7 @@ export function useTotalSpent(year: number) {
     ExpenseChartList,
     AxiosError<ApiError>
   >(
-    ['totalSpentYear', selector.userId],
+    ['totalSpentYear', selector.userId, year],
     () => getTotalSpent(selector.userId, year),
     {
       retry: 0,
