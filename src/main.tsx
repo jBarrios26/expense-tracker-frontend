@@ -36,7 +36,14 @@ const router = createBrowserRouter([
             path: '/home/budget',
             element: <CurrentMonth />,
           },
-          { path: '/home/budget/:budgetId', element: <BudgetDetail /> },
+          {
+            path: '/home/budget/:budgetId',
+            element: <BudgetDetail />,
+          },
+          {
+            path: '/home/budget-history/:budgetId',
+            element: <BudgetDetail isHistoryDetail={true} />,
+          },
           { path: '/home/budget/create', element: <CreateBudget /> },
           { path: '/home/historic', element: <BudgetHistoryList /> },
           { path: '/home/categories', element: <CategoryList /> },

@@ -2,24 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdAdd, MdArrowBack } from 'react-icons/md';
 import BudgetInfo from './components/BudgetInfo/BudgetInfo';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { modifyBudget, resetBudget } from '../../redux/states/budget';
 import { useBudget } from './hooks/useBudget';
 import { BudgetCategories } from '../../model/budget';
 import LoaderOverlay from '../../Components/LoaderOverlay/LoaderOverlay';
 import { BudgetExpenseTable } from './components/BudgetExpenseTable';
 import { useBudgetExpenses } from './hooks/useBudgetExpenses';
-import { AppStore } from '../../redux/store';
 import { ExpenseRow } from './components/BudgetExpenseTable/BudgetExpenseTable';
 import { modifyBudgetExpenseList } from '../../redux/states/budget_expense_list';
 import { PaginationState } from '@tanstack/react-table';
-import { OutlineButton } from '../../Components/OutlineButton';
 import { FloatingButton } from '../../Components/FloatingButton';
 import PrimaryButton from '../../Components/PrimaryButton/PrimaryButton';
 import { CreateExpenseModal } from './components/CreateExpenseModal';
 import { BudgetItemCategory } from './model/budget_item';
 
-export function BudgetDetail() {
+export interface BudgetDetailProps {
+  isHistoryDetail?: boolean;
+}
+
+export function BudgetDetail({ isHistoryDetail = true }: BudgetDetailProps) {
   const { budgetId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,29 +48,27 @@ export function BudgetDetail() {
     };
   }, [dispatch, budgetId]);
 
-  const { budget, budgetError, budgetHasError, budgetIsLoading } = useBudget(
-    (data) => {
-      dispatch(
-        modifyBudget({
-          id: data.budgetId,
-          name: data.name,
-          creationDate: data.creationDate,
-          categories: data.categories.map((category) => {
-            return {
-              id: category.id,
-              name: category.name,
-              color: category.color,
-              currentSpending: category.currentSpending,
-              limit: category.limit,
-            } as BudgetCategories;
-          }),
-          description: data.description,
-          totalSpending: data.totalSpending,
-          budgetLimit: data.budgetLimit,
-        })
-      );
-    }
-  );
+  const { budget, budgetIsLoading } = useBudget((data) => {
+    dispatch(
+      modifyBudget({
+        id: data.budgetId,
+        name: data.name,
+        creationDate: data.creationDate,
+        categories: data.categories.map((category) => {
+          return {
+            id: category.id,
+            name: category.name,
+            color: category.color,
+            currentSpending: category.currentSpending,
+            limit: category.limit,
+          } as BudgetCategories;
+        }),
+        description: data.description,
+        totalSpending: data.totalSpending,
+        budgetLimit: data.budgetLimit,
+      })
+    );
+  });
 
   const {
     expenseList,
@@ -102,27 +102,35 @@ export function BudgetDetail() {
         ></BudgetInfo>
       </LoaderOverlay>
       <div className="flex items-center justify-end py-4">
-        <span className="hidden grow-0 md:block">
-          <PrimaryButton
-            type={'button'}
-            onClick={() => {
-              setIsCreateModalOpen(true);
-            }}
-          >
-            <span className="flex items-center justify-center gap-2">
-              <MdAdd size={16} /> Add New Expense
-            </span>
-          </PrimaryButton>
-        </span>
-        <span className="fixed bottom-3 right-3 grow-0 md:hidden">
-          <FloatingButton
-            onClick={() => {
-              setIsCreateModalOpen(true);
-            }}
-          >
-            <MdAdd size={32} />
-          </FloatingButton>
-        </span>
+        {isHistoryDetail ? (
+          <></>
+        ) : (
+          <span className="hidden grow-0 md:block">
+            <PrimaryButton
+              type={'button'}
+              onClick={() => {
+                setIsCreateModalOpen(true);
+              }}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <MdAdd size={16} /> Add New Expense
+              </span>
+            </PrimaryButton>
+          </span>
+        )}
+        {isHistoryDetail ? (
+          <></>
+        ) : (
+          <span className="fixed bottom-3 right-3 grow-0 md:hidden">
+            <FloatingButton
+              onClick={() => {
+                setIsCreateModalOpen(true);
+              }}
+            >
+              <MdAdd size={32} />
+            </FloatingButton>
+          </span>
+        )}
       </div>
       <LoaderOverlay isLoading={expenseListIsLoading}>
         <BudgetExpenseTable
@@ -140,6 +148,7 @@ export function BudgetDetail() {
               } as ExpenseRow;
             }) ?? ([] as ExpenseRow[])
           }
+          disableActions={isHistoryDetail}
           pages={expenseList?.pagination.numOfPages}
           pagination={pagination}
           setPagination={setPagination}
