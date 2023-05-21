@@ -15,4 +15,5 @@ export interface Expense {
 export interface ExpenseCategory {
   name: string;
   color: string;
+  id: string;
 }

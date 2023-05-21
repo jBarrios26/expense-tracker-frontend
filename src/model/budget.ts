@@ -22,6 +22,21 @@ export interface BudgetCategories {
   limit: number;
 }
 
+export interface BudgetExpenseCategory {
+  name: string;
+  color: string;
+  id: string;
+}
+
+export interface BudgetExpense {
+  id: string;
+  name: string;
+  amount: number;
+  dateOfExpense: Date;
+  category: BudgetExpenseCategory;
+}
+
 export interface BudgetExpenseList {
   pagination: Pagination;
+  editingBudgetExpense?: BudgetExpense;
 }

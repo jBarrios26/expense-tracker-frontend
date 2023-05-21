@@ -15,6 +15,8 @@ import { Pagination } from '../../../../Components/Pagination';
 import RegularText from '../../../../Components/RegularText/RegularText';
 import { PrimaryButton } from '../../../../Components/PrimaryButton';
 import { Pagination as PaginationModel } from '../../../../common/model/pagination';
+import { useDispatch } from 'react-redux';
+import { setEditingExpense } from '../../../../redux/states/budget_expense_list';
 
 export interface ExpenseRow {
   expenseDate: Date;
@@ -44,6 +46,9 @@ function BudgetExpenseTable({
   setPagination,
   disableActions = false,
 }: BudgetExpenseTableProps) {
+  const dispatch = useDispatch();
+  console.log(expenses);
+
   const columns = useMemo<ColumnDef<ExpenseRow>[]>(
     () => [
       {
@@ -138,22 +143,27 @@ function BudgetExpenseTable({
           </th>
         ),
         accessorKey: 'expenseCategory',
-        cell: (value) => (
-          <div
-            className={classNames(
-              ' flex items-center justify-center text-sm font-medium md:p-3 md:text-xl',
-              'before:absolute before:top-0 before:left-3 before:w-5/12 before:whitespace-nowrap before:pl-4 before:font-bold before:text-white-text md:before:invisible',
-              `before:content-["Category"] `
-            )}
-          >
-            <Chip color={value.getValue<ExpenseCategoryItem>().color}>
-              {value.getValue<ExpenseCategoryItem>().name}
-            </Chip>
-          </div>
-        ),
+        cell: (value) => {
+          console.log(value);
+          console.log(value.getValue<string>());
+          return (
+            <div
+              className={classNames(
+                ' flex items-center justify-center text-sm font-medium md:p-3 md:text-xl',
+                'before:absolute before:top-0 before:left-3 before:w-5/12 before:whitespace-nowrap before:pl-4 before:font-bold before:text-white-text md:before:invisible',
+                `before:content-["Category"] `
+              )}
+            >
+              <Chip color={value.getValue<ExpenseCategoryItem>().color}>
+                {value.getValue<ExpenseCategoryItem>().name}
+              </Chip>
+            </div>
+          );
+        },
       },
       {
-        id: 'actions',
+        id: 'id',
+        accessorKey: 'id',
         header: (header) => (
           <th
             role={'columnheader'}
@@ -166,26 +176,48 @@ function BudgetExpenseTable({
             Actions
           </th>
         ),
-        cell: (value) => (
-          <div className="flex items-center justify-center p-3">
-            {disableActions ? (
-              <h3>No options available</h3>
-            ) : (
-              <button
-                onClick={() => {
-                  console.log('edit');
-                }}
-                className={classNames(
-                  'text-primary-blue',
-                  'rounded-full  hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl',
-                  'block  text-sm font-semibold md:flex md:items-center md:justify-center md:p-3 md:text-xl'
-                )}
-              >
-                <MdEdit size={32} />
-              </button>
-            )}
-          </div>
-        ),
+        cell: (value) => {
+          console.log(value);
+          console.log(value.getValue<string>());
+
+          return (
+            <div className="flex items-center justify-center p-3">
+              {disableActions ? (
+                <h3>No options available</h3>
+              ) : (
+                <button
+                  onClick={() => {
+                    const expense = expenses
+                      .filter(
+                        (expense) => expense.id === value.getValue<string>()
+                      )
+                      .pop();
+                    dispatch(
+                      setEditingExpense({
+                        id: expense?.id,
+                        name: expense?.expenseName,
+                        amount: expense?.expenseAmount,
+                        dateOfExpense: expense?.expenseDate,
+                        category: {
+                          id: expense?.expenseCategory,
+                          name: '',
+                          color: '',
+                        },
+                      })
+                    );
+                  }}
+                  className={classNames(
+                    'text-primary-blue',
+                    'rounded-full  hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl',
+                    'block  text-sm font-semibold md:flex md:items-center md:justify-center md:p-3 md:text-xl'
+                  )}
+                >
+                  <MdEdit size={32} />
+                </button>
+              )}
+            </div>
+          );
+        },
       },
     ],
     []
