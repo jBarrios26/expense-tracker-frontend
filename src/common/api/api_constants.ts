@@ -18,3 +18,6 @@ export const totalSpentYearPath = 'api/dashboard/total-spent/';
 export const totalSpentMonthPath = 'api/dashboard/total-spent-by-month/';
 export const topCategoriesPath = 'api/dashboard/categories/';
 export const spentByDayPath = 'api/dashboard/categories/spent-by-day/';
+
+export const editExpensePath = 'api/budget-expense/';
+export const deleteExpensePath = 'api/budget-expense/';

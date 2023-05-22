@@ -25,9 +25,9 @@ const budgetExpenseListSlice = createSlice({
       return {
         ...state,
         editingBudgetExpense: action.payload as BudgetExpense,
-      };
+      } as BudgetExpenseList;
     },
-    clearEditingExpense: (state, _) => {
+    clearEditingExpense: (state) => {
       return { ...state, editingBudgetExpense: undefined };
     },
     resetBudgetExpenseList: () => budgetExpenseListEmpty,

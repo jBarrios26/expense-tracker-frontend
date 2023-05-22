@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Budget } from '../../../../model/budget';
+import { Budget, BudgetExpense } from '../../../../model/budget';
 import {
   ColumnDef,
   flexRender,
@@ -14,7 +14,6 @@ import { Chip } from '../../../../Components/Chip';
 import { Pagination } from '../../../../Components/Pagination';
 import RegularText from '../../../../Components/RegularText/RegularText';
 import { PrimaryButton } from '../../../../Components/PrimaryButton';
-import { Pagination as PaginationModel } from '../../../../common/model/pagination';
 import { useDispatch } from 'react-redux';
 import { setEditingExpense } from '../../../../redux/states/budget_expense_list';
 
@@ -27,6 +26,7 @@ export interface ExpenseRow {
 }
 
 export interface ExpenseCategoryItem {
+  id: string;
   name: string;
   color: string;
 }
@@ -37,6 +37,8 @@ export interface BudgetExpenseTableProps {
   pagination: PaginationState;
   setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
   disableActions?: boolean;
+  onEdit: () => void;
+  onDelete: (expenseId: string) => void;
 }
 
 function BudgetExpenseTable({
@@ -45,10 +47,10 @@ function BudgetExpenseTable({
   pagination,
   setPagination,
   disableActions = false,
+  onEdit,
+  onDelete,
 }: BudgetExpenseTableProps) {
   const dispatch = useDispatch();
-  console.log(expenses);
-
   const columns = useMemo<ColumnDef<ExpenseRow>[]>(
     () => [
       {
@@ -144,8 +146,6 @@ function BudgetExpenseTable({
         ),
         accessorKey: 'expenseCategory',
         cell: (value) => {
-          console.log(value);
-          console.log(value.getValue<string>());
           return (
             <div
               className={classNames(
@@ -177,50 +177,60 @@ function BudgetExpenseTable({
           </th>
         ),
         cell: (value) => {
-          console.log(value);
-          console.log(value.getValue<string>());
-
           return (
             <div className="flex items-center justify-center p-3">
               {disableActions ? (
                 <h3>No options available</h3>
               ) : (
-                <button
-                  onClick={() => {
-                    const expense = expenses
-                      .filter(
-                        (expense) => expense.id === value.getValue<string>()
-                      )
-                      .pop();
-                    dispatch(
-                      setEditingExpense({
-                        id: expense?.id,
-                        name: expense?.expenseName,
-                        amount: expense?.expenseAmount,
-                        dateOfExpense: expense?.expenseDate,
-                        category: {
-                          id: expense?.expenseCategory,
-                          name: '',
-                          color: '',
-                        },
-                      })
-                    );
-                  }}
-                  className={classNames(
-                    'text-primary-blue',
-                    'rounded-full  hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl',
-                    'block  text-sm font-semibold md:flex md:items-center md:justify-center md:p-3 md:text-xl'
-                  )}
-                >
-                  <MdEdit size={32} />
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      const expense = expenses
+                        .filter(
+                          (expense) => expense.id === value.getValue<string>()
+                        )
+                        .pop();
+                      dispatch(
+                        setEditingExpense({
+                          id: expense?.id,
+                          name: expense?.expenseName,
+                          amount: expense?.expenseAmount,
+                          dateOfExpense: expense?.expenseDate.getTime(),
+                          category: {
+                            id: expense?.expenseCategory.id,
+                          },
+                        } as BudgetExpense)
+                      );
+                      onEdit();
+                    }}
+                    className={classNames(
+                      'text-primary-blue',
+                      'rounded-full  hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl',
+                      'block  text-sm font-semibold md:flex md:items-center md:justify-center md:p-3 md:text-xl'
+                    )}
+                  >
+                    <MdEdit size={32} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      onDelete(value.getValue<string>());
+                    }}
+                    className={classNames(
+                      'text-primary-red',
+                      'rounded-full  hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl',
+                      'block  text-sm font-semibold md:flex md:items-center md:justify-center md:p-3 md:text-xl'
+                    )}
+                  >
+                    <MdDelete size={32} />
+                  </button>
+                </div>
               )}
             </div>
           );
         },
       },
     ],
-    []
+    [disableActions, dispatch, expenses, onEdit]
   );
 
   const defaultData = React.useMemo(() => [], []);
@@ -235,7 +245,6 @@ function BudgetExpenseTable({
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    debugTable: true,
   });
 
   return (
@@ -261,12 +270,12 @@ function BudgetExpenseTable({
       ) : (
         <table className="block w-full md:table md:table-auto md:rounded-xl md:bg-dark-blue-custom md:p-4 ">
           <thead className="block md:table-header-group">
-            {table.getHeaderGroups().map((headerGroup, index) => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <tr
                 key={headerGroup.id}
                 className="hidden  md:static md:table-row"
               >
-                {headerGroup.headers.map((header, index) =>
+                {headerGroup.headers.map((header) =>
                   flexRender(
                     header.column.columnDef.header,
                     header.getContext()

@@ -7,6 +7,7 @@ export interface TextFieldInterface {
   error?: string;
   type?: string;
   id: string;
+  defaultValue?: string;
   register?: UseFormRegisterReturn;
 }
 
@@ -16,6 +17,7 @@ const TextField: React.FC<TextFieldInterface> = ({
   type,
   id,
   register,
+  defaultValue,
   error,
 }) => {
   return (
@@ -32,6 +34,7 @@ const TextField: React.FC<TextFieldInterface> = ({
           placeholder="a"
           className="block h-full w-full appearance-none bg-transparent px-4 py-2 text-base placeholder:text-transparent focus:border-none focus:outline-none focus:ring-0"
           {...register}
+          defaultValue={defaultValue}
         />
         <label className="absolute top-2 z-[1]  bg-dark-blue-custom px-4 py-0 text-base">
           {label}

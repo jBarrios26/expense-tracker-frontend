@@ -4,7 +4,6 @@ import { TextField } from '../../Components/TextField';
 import { Title } from '../../Components/Title';
 import { BudgetItemCategory } from '../Budget/model/budget_item';
 import Select, { SingleValue, StylesConfig } from 'react-select';
-import './index.css';
 import * as yup from 'yup';
 import {
   Controller,
@@ -17,6 +16,15 @@ import { RequiredNumberSchema } from 'yup/lib/number';
 import { useParams } from 'react-router-dom';
 import { Expense } from '../Budget/model/expense_list';
 import { useAddExpense } from '../CreateExpense/hooks/useAddExpense';
+import budget from '../../redux/states/budget';
+import moment from 'moment';
+import { clearEditingExpense } from '../../redux/states/budget_expense_list';
+import { useDispatch } from 'react-redux';
+import { useEditExpense } from './hooks/use_edit_expense';
+
+export const noop = () => {
+  return;
+};
 
 export interface EditExpenseProps {
   budgetCategories: BudgetItemCategory[];
@@ -36,7 +44,7 @@ export interface BudgetExpenseFormShape {
   name: string;
   amount: number;
   category: string;
-  date: Date;
+  date: string;
 }
 
 function EditExpense({
@@ -47,6 +55,8 @@ function EditExpense({
   budgetExpense,
 }: EditExpenseProps) {
   const { budgetId } = useParams();
+  const dispatch = useDispatch();
+
   const createExpenseSchema: yup.SchemaOf<BudgetExpenseFormShape> = yup
     .object()
     .shape({
@@ -74,7 +84,21 @@ function EditExpense({
             return scheme;
           }
         ),
-      date: yup.date().required('Date is required').typeError('Invalid date'),
+      date: yup
+        .string()
+        .required('Date is required')
+        .typeError('Invalid date')
+        .test({
+          test: (value) => {
+            if (value === undefined) {
+              return false;
+            }
+            if (!moment(value, 'YYYY-MM-DD', true).isValid()) {
+              return false;
+            }
+            return true;
+          },
+        }),
       category: yup.string().required('You should pick a category'),
     });
 
@@ -127,7 +151,6 @@ function EditExpense({
       }),
     [budgetCategories]
   );
-
   const {
     register,
     control,
@@ -139,26 +162,31 @@ function EditExpense({
     defaultValues: {
       name: budgetExpense.name,
       amount: budgetExpense.amount,
-      date: new Date(budgetExpense.dateOfExpense),
+      date: new Date(budgetExpense.dateOfExpense)
+        .toISOString()
+        .substring(0, 10),
       category: budgetExpense.category.id,
     },
   });
 
-  const { addExpense, isError, error, isLoading } = useAddExpense(
+  const { editExpense, isError, error, isLoading } = useEditExpense(
     () => {
       onComplete();
+      dispatch(clearEditingExpense());
     },
     page,
-    size
+    size,
+    budgetExpense.id
   );
 
   const onSubmit: SubmitHandler<BudgetExpenseFormShape> = (data) =>
-    addExpense({
-      name: data.name,
-      amount: data.amount,
-      date: data.date,
-      category: data.category,
-      budgetId: budgetId ?? '',
+    editExpense({
+      id: budgetExpense.id,
+      updateExpense: {
+        name: data.name,
+        expenseDate: new Date(Date.parse(data.date)),
+        amount: data.amount,
+      },
     });
 
   const onError: SubmitErrorHandler<BudgetExpenseFormShape> = (data) =>
@@ -167,34 +195,51 @@ function EditExpense({
   if (isLoading)
     return (
       <div className="w-4/5 rounded-lg bg-dark-blue-custom px-3 py-4">
-        <Title>Adding expense...</Title>
+        <Title>Editing expense...</Title>
       </div>
     );
 
   return (
     <div className="w-4/5 rounded-lg bg-dark-blue-custom px-3 py-4">
-      <Title> Add a new expense</Title>
+      <Title> Edit this expense</Title>
       <form
         className="my-5 flex flex-col gap-3"
         onSubmit={(...args) => void handleSubmit(onSubmit, onError)(...args)}
       >
         <Controller
           control={control}
-          render={({ field: { onChange, name, ref } }) => (
-            <Select
-              ref={ref}
-              name={name}
-              options={options}
-              styles={categoryStyles}
-              isMulti={false}
-              onChange={(
-                newValue: SingleValue<BudgetCategoryItemOption>,
-                _
-              ) => {
-                onChange(newValue?.value);
-              }}
-            />
-          )}
+          render={({
+            field: { onChange, name, ref },
+            formState: { defaultValues },
+          }) => {
+            return (
+              <Select
+                ref={ref}
+                name={name}
+                options={options}
+                styles={categoryStyles}
+                isMulti={false}
+                isDisabled={true}
+                defaultValue={{
+                  value: defaultValues?.category ?? '',
+                  label:
+                    budgetCategories.find(
+                      (category) => category.id === defaultValues?.category
+                    )?.name ?? '',
+                  color:
+                    budgetCategories.find(
+                      (category) => category.id === defaultValues?.category
+                    )?.color ?? '',
+                }}
+                onChange={(
+                  newValue: SingleValue<BudgetCategoryItemOption>,
+                  _
+                ) => {
+                  onChange(newValue?.value);
+                }}
+              />
+            );
+          }}
           name={'category'}
         ></Controller>
         <div className=" flex flex-col gap-4 md:flex md:flex-row">
@@ -226,8 +271,8 @@ function EditExpense({
         </div>
         <div className="md:flex  md:justify-center ">
           <div className="md:w-3/5">
-            <PrimaryButton type={'submit'} onClick={() => console.log('add')}>
-              Add expense
+            <PrimaryButton type={'submit'} onClick={noop}>
+              Confirm edit
             </PrimaryButton>
           </div>
         </div>

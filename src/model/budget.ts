@@ -23,17 +23,15 @@ export interface BudgetCategories {
 }
 
 export interface BudgetExpenseCategory {
-  name: string;
-  color: string;
-  id: string;
+  id?: string;
 }
 
 export interface BudgetExpense {
-  id: string;
-  name: string;
-  amount: number;
-  dateOfExpense: Date;
-  category: BudgetExpenseCategory;
+  id?: string;
+  name?: string;
+  amount?: number;
+  dateOfExpense?: number;
+  category?: BudgetExpenseCategory;
 }
 
 export interface BudgetExpenseList {
