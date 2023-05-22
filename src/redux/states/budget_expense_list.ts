@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { BudgetExpenseList } from '../../model/budget';
+import { BudgetExpense, BudgetExpenseList } from '../../model/budget';
 
 export const budgetExpenseListEmpty: BudgetExpenseList = {
   pagination: {
@@ -9,6 +9,7 @@ export const budgetExpenseListEmpty: BudgetExpenseList = {
     hasPreviousPage: false,
     numOfPages: 0,
   },
+  editingBudgetExpense: undefined,
 };
 
 const budgetExpenseListSlice = createSlice({
@@ -20,6 +21,15 @@ const budgetExpenseListSlice = createSlice({
     modifyBudgetExpenseList: (state, action) => {
       return { ...state, ...action.payload } as BudgetExpenseList;
     },
+    setEditingExpense: (state, action) => {
+      return {
+        ...state,
+        editingBudgetExpense: action.payload as BudgetExpense,
+      } as BudgetExpenseList;
+    },
+    clearEditingExpense: (state) => {
+      return { ...state, editingBudgetExpense: undefined };
+    },
     resetBudgetExpenseList: () => budgetExpenseListEmpty,
   },
 });
@@ -28,6 +38,8 @@ export const {
   createBudgetExpenseList,
   modifyBudgetExpenseList,
   resetBudgetExpenseList,
+  clearEditingExpense,
+  setEditingExpense,
 } = budgetExpenseListSlice.actions;
 
 export default budgetExpenseListSlice.reducer;

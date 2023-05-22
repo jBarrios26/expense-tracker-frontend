@@ -11,11 +11,14 @@ import { BudgetExpenseTable } from './components/BudgetExpenseTable';
 import { useBudgetExpenses } from './hooks/useBudgetExpenses';
 import { ExpenseRow } from './components/BudgetExpenseTable/BudgetExpenseTable';
 import { modifyBudgetExpenseList } from '../../redux/states/budget_expense_list';
-import { PaginationState } from '@tanstack/react-table';
+import { PaginationState, noop } from '@tanstack/react-table';
 import { FloatingButton } from '../../Components/FloatingButton';
 import PrimaryButton from '../../Components/PrimaryButton/PrimaryButton';
 import { CreateExpenseModal } from './components/CreateExpenseModal';
 import { BudgetItemCategory } from './model/budget_item';
+import EditExpenseModal from './components/EditExpenseModal';
+import { useDeleteExpense } from './hooks/useDeleteExpense';
+import { CgSize } from 'react-icons/cg';
 
 export interface BudgetDetailProps {
   isHistoryDetail?: boolean;
@@ -32,6 +35,7 @@ export function BudgetDetail({ isHistoryDetail = true }: BudgetDetailProps) {
   });
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
 
   const pagination = React.useMemo(
     () => ({
@@ -69,15 +73,20 @@ export function BudgetDetail({ isHistoryDetail = true }: BudgetDetailProps) {
       })
     );
   });
+  const { deleteExpense, isLoading } = useDeleteExpense(
+    noop,
+    pageIndex,
+    pageSize
+  );
 
-  const {
-    expenseList,
-    expenseListError,
-    expenseListHasError,
-    expenseListIsLoading,
-  } = useBudgetExpenses(10, pageIndex, (data) => {
-    dispatch(modifyBudgetExpenseList(data.pagination));
-  });
+  const { expenseList, expenseListIsLoading } = useBudgetExpenses(
+    10,
+    pageIndex,
+    (data) => {
+      dispatch(modifyBudgetExpenseList(data.pagination));
+    }
+  );
+
   return (
     <div className="block p-6">
       <button
@@ -144,10 +153,15 @@ export function BudgetDetail({ isHistoryDetail = true }: BudgetDetailProps) {
                 expenseCategory: {
                   name: expense.category.name,
                   color: expense.category.color,
+                  id: expense.category.id,
                 },
               } as ExpenseRow;
             }) ?? ([] as ExpenseRow[])
           }
+          onEdit={() => setIsEditModalOpen(true)}
+          onDelete={(expenseId: string) => {
+            deleteExpense({ id: expenseId });
+          }}
           disableActions={isHistoryDetail}
           pages={expenseList?.pagination.numOfPages}
           pagination={pagination}
@@ -159,6 +173,15 @@ export function BudgetDetail({ isHistoryDetail = true }: BudgetDetailProps) {
         isOpen={isCreateModalOpen}
         toggle={function (value: boolean): void {
           setIsCreateModalOpen(value);
+        }}
+        page={pageIndex}
+        size={pageSize}
+      />
+      <EditExpenseModal
+        budgetCategories={budget?.categories ?? ([] as BudgetItemCategory[])}
+        isOpen={isEditModalOpen}
+        toggle={function (value: boolean): void {
+          setIsEditModalOpen(value);
         }}
         page={pageIndex}
         size={pageSize}

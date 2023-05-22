@@ -128,6 +128,7 @@ export default function BudgetHistoryList() {
               key={index}
               name={budget.name}
               id={budget.budgetId}
+              isHistoryDetail={true}
               onDelete={function (id: string): void {
                 console.log(budget.createdAt);
               }}

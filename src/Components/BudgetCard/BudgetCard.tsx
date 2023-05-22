@@ -61,25 +61,23 @@ function BudgetCard({
             >
               <HiOutlineEye size={32} />
             </button>
-            <button
-              className={classNames(
-                'text-primary-blue',
-                'rounded-full p-2 hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl'
-              )}
-            >
-              <MdEdit size={32} />
-            </button>
-            <button
-              onClick={() => {
-                onDelete('');
-              }}
-              className={classNames(
-                'text-primary-red',
-                'rounded-full p-2 hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl'
-              )}
-            >
-              <MdDelete size={32} />
-            </button>
+            {isHistoryDetail ? (
+              <></>
+            ) : (
+              <div>
+                <button
+                  onClick={() => {
+                    onDelete('');
+                  }}
+                  className={classNames(
+                    'text-primary-red',
+                    'rounded-full p-2 hover:bg-slate-50 hover:bg-opacity-10 hover:shadow-2xl'
+                  )}
+                >
+                  <MdDelete size={32} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

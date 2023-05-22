@@ -3,6 +3,7 @@ import {
   apiUrl,
   budgetExpenseListPath,
   budgetItemPath,
+  deleteExpensePath,
 } from '../../../common/api/api_constants';
 import ApiAuthClient from '../../../common/factory/api_auth_client';
 import { ApiError } from '../../../common/model/error/api_error';
@@ -36,5 +37,12 @@ export default class BudgetService {
     >(`${budgetExpenseListPath}${budgetId}`, {
       params: { size: size, page: page },
     });
+  }
+
+  public async deleteExpense(expenseId: string) {
+    return await this._clientInstance.client.delete<
+      boolean,
+      AxiosResponse<boolean, ApiError>
+    >(`${deleteExpensePath}${expenseId}`);
   }
 }
