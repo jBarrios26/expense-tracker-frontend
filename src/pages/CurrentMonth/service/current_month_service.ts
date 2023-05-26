@@ -1,8 +1,7 @@
 import { AxiosResponse } from 'axios';
 import {
   apiUrl,
-  categoriesPath,
-  createBudgetPath,
+  deleteUserBudgetPath,
   userBudgetsPath,
 } from '../../../common/api/api_constants';
 import ApiAuthClient from '../../../common/factory/api_auth_client';
@@ -25,5 +24,14 @@ export default class CurrentMonthBudgetService {
       CurrentMonthBudgetListResponse,
       AxiosResponse<CurrentMonthBudgetListResponse, ApiError>
     >(`${userBudgetsPath}${userId}`, { params: { size: size, page: page } });
+  }
+
+  public async deleteUserBudget(
+    budgetId: string
+  ): Promise<AxiosResponse<boolean, ApiError>> {
+    return await this._clientInstance.client.delete<
+      boolean,
+      AxiosResponse<boolean, ApiError>
+    >(`${deleteUserBudgetPath}${budgetId}`);
   }
 }
