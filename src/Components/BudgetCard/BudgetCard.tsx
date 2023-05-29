@@ -67,7 +67,7 @@ function BudgetCard({
               <div>
                 <button
                   onClick={() => {
-                    onDelete('');
+                    onDelete(id);
                   }}
                   className={classNames(
                     'text-primary-red',

@@ -6,6 +6,7 @@ export const userInfoPath = 'api/user/';
 export const categoriesPath = 'api/category/';
 export const createBudgetPath = 'api/budget/create-budget';
 export const userBudgetsPath = 'api/budget/';
+export const deleteUserBudgetPath = 'api/budget/';
 export const userCategoriesPath = 'api/category/user-categories/';
 export const createCategoryPath = 'api/category/';
 export const budgetItemPath = 'api/budget/item/';

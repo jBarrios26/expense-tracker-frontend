@@ -22,6 +22,7 @@ import {
 } from '../../redux/states/budget_list_state';
 import { AppStore } from '../../redux/store';
 import { Loader } from '../../Components/Loader';
+import { useDeleteBudget } from './hooks/useDeleteBudget';
 
 interface SearchForm {
   searchValue: string;
@@ -59,6 +60,14 @@ function CurrentMonth() {
   } = useBudgetList(budgetListState.pagination.currentPage, 20, (data) => {
     dispatch(createBudgetList({ pagination: data.pagination }));
   });
+
+  const { deleteBudget } = useDeleteBudget(
+    (data) => {
+      console.log(data);
+    },
+    budgetListState.pagination.currentPage,
+    20
+  );
 
   const navigation = useNavigate();
 
@@ -117,7 +126,7 @@ function CurrentMonth() {
             name={budget.name}
             id={budget.budgetId}
             onDelete={function (id: string): void {
-              console.log(budget.createdAt);
+              deleteBudget({ id: id });
             }}
             topCategories={budget.topCategories.slice(
               0,
